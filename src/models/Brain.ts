@@ -14,9 +14,7 @@ import StockAPI from "@/models/StockAPI";
 import PriceUpdateStream from "./FinnHub/PriceUpdateStream";
 import { convertStreamToPriceUpdates } from "@/utils/Converter";
 import CommunicationSocket from "./CommunicationSocket";
-import { WebDriver } from "selenium-webdriver";
-import BrowserBuyOptionSingleTask from "./BrowserTask/BuyOptionSingle";
-import BrowserSellOptionSingleTask from "./BrowserTask/SellOptionSingle";
+
 
 export default class Brain {
     public stockAPIInstance: StockAPI;
@@ -178,7 +176,7 @@ export default class Brain {
 
                     let stopLevelValue = level.value - (targetLevelValue - level.value) * LOSS_TO_PROFIT_RATIO;
 
-                    await this.buyToOpen(ticker, _.last(ticker.lastPrices)!, level.value, targetLevelValue, stopLevelValue, OptionSentiment.Bull);
+                  //  await this.buyToOpen(ticker, _.last(ticker.lastPrices)!, level.value, targetLevelValue, stopLevelValue, OptionSentiment.Bull);
                     level.signals = [];
                 }
                 else if (uniqueAction === TradeAction.BuyToOpen + OptionSentiment.Bear) {
@@ -194,7 +192,7 @@ export default class Brain {
 
                     let stopLevelValue = level.value + (level.value - targetLevelValue) * LOSS_TO_PROFIT_RATIO;
 
-                    await this.buyToOpen(ticker, _.last(ticker.lastPrices)!, level.value, targetLevelValue, stopLevelValue, OptionSentiment.Bear);
+                    //await this.buyToOpen(ticker, _.last(ticker.lastPrices)!, level.value, targetLevelValue, stopLevelValue, OptionSentiment.Bear);
                     level.signals = [];
                 }
             }
@@ -224,7 +222,7 @@ export default class Brain {
                 if (takenTrade.sentiment === OptionSentiment.Bull) {
                     // Sell at stop loss
                     if (lastPrice < takenTrade.stopLoss) {
-                        await this.sellToClose(takenTrade, lastPrice);
+                      //  await this.sellToClose(takenTrade, lastPrice);
                         ticker.takenTrades.splice(j);
                     }
                     // Update stop loss
@@ -245,7 +243,7 @@ export default class Brain {
                 else if (takenTrade.sentiment === OptionSentiment.Bear) {
                     // Put, sell if above stop loss or reach profit target
                     if (lastPrice > takenTrade.stopLoss) {
-                        await this.sellToClose(takenTrade, lastPrice);
+                       // await this.sellToClose(takenTrade, lastPrice);
                         ticker.takenTrades.splice(j);
                     }
                     else if (lastPrice <= takenTrade.profitTarget) {
@@ -286,8 +284,8 @@ export default class Brain {
     async buyToOpen(ticker: Ticker, entryPrice: number, triggerLevelValue: number, targetLevelValue: number, stopLevelValue: number, optionSentiment: OptionSentiment): Promise<void> {
         return new Promise(async (resolve, reject) => {
             const optionInfo = await this.stockAPIInstance.getAppropriateStrikeAndExpirationDateForOptionSentiment(ticker.symbol, optionSentiment);
-            const newBuyTask = new BrowserBuyOptionSingleTask(ticker.symbol, optionSentiment, optionInfo.expirationDate, optionInfo.strike, entryPrice, triggerLevelValue, targetLevelValue, stopLevelValue);
-            this.communicationSocket.sendBrowserTask(newBuyTask);
+          //  const newBuyTask = new BrowserBuyOptionSingleTask(ticker.symbol, optionSentiment, optionInfo.expirationDate, optionInfo.strike, entryPrice, triggerLevelValue, targetLevelValue, stopLevelValue);
+//this.communicationSocket.sendBrowserTask(newBuyTask);
 
             const newTrade = new OptionStrategy(ticker.symbol, optionSentiment, triggerLevelValue, targetLevelValue, stopLevelValue, 1);
             newTrade.enteredExpirationDate = optionInfo.expirationDate;
@@ -301,8 +299,8 @@ export default class Brain {
 
     async sellToClose(tradeStrategy: OptionStrategy, sellPrice: number): Promise<void> {
         return new Promise(async (resolve, reject) => {
-            const newSellTask = new BrowserSellOptionSingleTask(tradeStrategy.ticker, tradeStrategy.sentiment, tradeStrategy.enteredExpirationDate, tradeStrategy.enteredStrike, sellPrice);
-            this.communicationSocket.sendBrowserTask(newSellTask);
+          //  const newSellTask = new BrowserSellOptionSingleTask(tradeStrategy.ticker, tradeStrategy.sentiment, tradeStrategy.enteredExpirationDate, tradeStrategy.enteredStrike, sellPrice);
+          //this.communicationSocket.sendBrowserTask(newSellTask);
             resolve();
         });
     }

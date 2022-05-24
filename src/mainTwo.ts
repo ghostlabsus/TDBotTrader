@@ -1,5 +1,5 @@
 import 'module-alias/register';
-import chalk from 'chalk';
+/* import chalk from 'chalk';
 import { REFRESH_BROWSER_PERIOD } from '@/constants';
 import Browser from '@/models/Browser';
 import BrowserLoginTask from '@/models/BrowserTask/LoginTask';
@@ -8,19 +8,12 @@ import { print } from '@/utils/PrintHelper';
 import BrowserRefreshTask from '@/models/BrowserTask/RefreshTask';
 import BrowserSocket from './models/BrowserSocket';
 import Wallet from './models/Wallet';
-import StockAPI from './models/StockAPI';
+import StockAPI from './models/StockAPI'; */
 
 const main = async () => {
-    const stockAPIInstance = new StockAPI();
-    print(chalk.inverse('1. Initializing wallet instance...'));
-    const wallet = new Wallet(stockAPIInstance);
+/* 
 
-    print(chalk.inverse('1. Initializing browser instance...'));
-    const browser = new Browser();
-    await browser.prepareBrowser();
-    const loginTask = new BrowserLoginTask()
-    browser.runTasksInQueue();
-    browser.addTask(loginTask);
+*/
 
     // setInterval(() => {
     //     const refreshTask = new BrowserRefreshTask();
